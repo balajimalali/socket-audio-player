@@ -19,7 +19,11 @@ def on_row_select(event):
 
 def toggle_play():
     # Placeholder for play/pause functionality
-    play_pause()
+    if play_pause():
+        play_button["text"] = "Pause"
+    else:
+        play_button["text"] = "Play"
+    
     print("Play/Pause toggled")
 
 def on_close():
@@ -68,7 +72,7 @@ control_frame = ttk.Frame(root)
 control_frame.pack(fill=tk.X, side=tk.BOTTOM)
 
 # Play/Pause Button
-play_button = ttk.Button(control_frame, text="Play/Pause", command=toggle_play)
+play_button = ttk.Button(control_frame, text="Pause", command=toggle_play)
 play_button.pack(side=tk.LEFT, padx=10, pady=10)
 
 # Seekbar Frame

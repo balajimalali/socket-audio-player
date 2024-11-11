@@ -6,6 +6,8 @@ import pyaudio
 import threading
 import time
 
+# HOST = '20.244.91.160'
+# PORT = 8080
 HOST = 'localhost'
 PORT = 12345
 
@@ -21,6 +23,7 @@ def play_pause():
         play_song = False
     else:
         play_song = True
+    return play_song
 
 def set_audio(name):
     global AUDIO
@@ -50,15 +53,16 @@ def receive(client_socket, name, update_seekbar):
     while size<total_size and name==AUDIO:
         with lock:
             data = client_socket.recv(1024)
-            # print("receiing..")
             buffer.seek(size)
             buffer.write(data)
-            size = size+1024
+            size = size+len(data)
             step += 1
             if step>=10:
                 with seek_lock:
                     step = 0
                     update_seekbar(lp=size*100/total_size)
+        if size-pos>=2**22:
+            time.sleep(3)
 
 
 
@@ -85,6 +89,7 @@ def play(name, update_seekbar):
                 data = buffer.read(chunk_size)
             else:
                 print("buffering..")
+                time.sleep(3)
         if name==AUDIO and data!=None:
             stream.write(data)
             pos = pos+chunk_size
